@@ -12,13 +12,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script
-          defer
-          data-website-id="dfid_u8aDXcz8Yfz2CV55mNkHC"
-          data-domain="suprlaunch.com"
-          data-allow-localhost="true"
-          src="https://datafa.st/js/script.js"
-        />
         <style
           dangerouslySetInnerHTML={{
             __html: `

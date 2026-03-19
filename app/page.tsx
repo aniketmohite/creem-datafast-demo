@@ -1,42 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { initDataFast, type DataFastWeb } from "datafast";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
-  const [visitorReady, setVisitorReady] = useState(false);
+  const datafastRef = useRef<DataFastWeb | null>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // Check if DataFast cookie exists, set fallback for localhost
-    const visitorId = getCookie("datafast_visitor_id");
-    if (visitorId) {
-      setVisitorReady(true);
-    } else {
-      // Auto-set fallback cookie for localhost/dev
-      const id = `dfv_${Math.random().toString(36).slice(2, 10)}_${Date.now()}`;
-      document.cookie = `datafast_visitor_id=${id}; path=/`;
-      setVisitorReady(true);
-    }
+    initDataFast({
+      websiteId: process.env.NEXT_PUBLIC_DATAFAST_WEBSITE_ID!,
+      allowLocalhost: true,
+    }).then((client) => {
+      datafastRef.current = client;
+      setReady(true);
+    });
   }, []);
 
-  function getCookie(name: string): string | null {
-    const pairs = document.cookie.split(";");
-    for (const pair of pairs) {
-      const eqIdx = pair.indexOf("=");
-      if (eqIdx === -1) continue;
-      const key = pair.substring(0, eqIdx).trim();
-      const val = pair.substring(eqIdx + 1).trim();
-      if (key === name) return decodeURIComponent(val);
-    }
-    return null;
-  }
-
   async function handleBuyNow() {
-    if (!visitorReady) return;
+    if (!ready) return;
 
     setLoading(true);
     try {
-      const visitorId = getCookie("datafast_visitor_id");
+      datafastRef.current?.track("buy_now_click", { product: "datafast_pro" });
+      const visitorId = datafastRef.current?.getVisitorId() ?? undefined;
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -154,7 +142,7 @@ export default function Home() {
           </p>
 
           <div style={{ marginBottom: 32 }}>
-            <span style={{ fontSize: 48, fontWeight: 700 }}>$29</span>
+            <span style={{ fontSize: 48, fontWeight: 700 }}>$1</span>
             <span style={{ fontSize: 18, color: "#888", marginLeft: 4 }}>
               /month
             </span>
@@ -203,7 +191,7 @@ export default function Home() {
 
           <button
             onClick={handleBuyNow}
-            disabled={loading || !visitorReady}
+            disabled={loading || !ready}
             style={{
               width: "100%",
               padding: "16px 32px",
