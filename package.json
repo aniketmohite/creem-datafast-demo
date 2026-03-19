@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "creem": "^1.4.3",
-    "creem-datafast": "^0.1.0",
+    "creem-datafast-sdk": "^0.1.0",
     "datafast": "^2.1.2",
     "next": "^15.0.0",
     "react": "^19.0.0",

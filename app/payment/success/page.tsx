@@ -34,9 +34,9 @@ function PaymentSuccessContent() {
 
   useEffect(() => {
     // CREEM redirects with query params after payment
-    // Small delay to let webhook process
+    // Small delay to let webhook process, then redirect to home
     const timer = setTimeout(() => {
-      setStatus("success");
+      window.location.href = "/";
     }, 1500);
     return () => clearTimeout(timer);
   }, []);

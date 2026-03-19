@@ -1,10 +1,11 @@
-import { createCreemDataFast } from "creem-datafast";
+import { createCreemDataFast } from "creem-datafast-sdk";
 
 const cd = createCreemDataFast({
   creemApiKey: process.env.CREEM_API_KEY!,
   creemWebhookSecret: process.env.CREEM_WEBHOOK_SECRET!,
   datafastApiKey: process.env.DATAFAST_API_KEY!,
-  testMode: true,
+  creemServerIdx: 1, // sandbox
+  debug: true,
 });
 
 export async function POST(request: Request): Promise<Response> {
@@ -19,20 +20,25 @@ export async function POST(request: Request): Promise<Response> {
     const successUrl = `${appUrl}/payment/success`;
 
     const checkout = await cd.createCheckout({
-      productId,
-      successUrl,
-      metadata: {},
-      tracking: { visitorId },
+      input: {
+        productId,
+        successUrl,
+        metadata: {},
+      },
+      datafastVisitorId: visitorId,
     });
 
     console.log("Checkout created:", {
-      id: checkout.checkoutId,
+      id: checkout.id,
       checkoutUrl: checkout.checkoutUrl,
+      metadata: checkout.metadata,
     });
 
     return Response.json({
-      id: checkout.checkoutId,
+      id: checkout.id,
       checkoutUrl: checkout.checkoutUrl,
+      status: checkout.status,
+      metadata: checkout.metadata,
     });
   } catch (error) {
     console.error("Checkout creation failed:", error);
