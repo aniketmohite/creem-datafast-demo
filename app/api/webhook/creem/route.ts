@@ -1,21 +1,18 @@
 import {
   createCreemDataFast,
-  InMemoryIdempotencyStore,
+  MemoryIdempotencyStore,
 } from "creem-datafast";
+import { createNextWebhookHandler } from "creem-datafast/next";
 
 const cd = createCreemDataFast({
   creemApiKey: process.env.CREEM_API_KEY!,
   creemWebhookSecret: process.env.CREEM_WEBHOOK_SECRET!,
   datafastApiKey: process.env.DATAFAST_API_KEY!,
-  creemServerIdx: 1, // sandbox
-  debug: true,
-  idempotencyStore: new InMemoryIdempotencyStore(),
+  testMode: true,
+  idempotencyStore: new MemoryIdempotencyStore(),
 });
 
-export const POST = cd.nextWebhookHandler({
-  onProcessed(result) {
-    console.log("Webhook processed:", result);
-  },
+export const POST = createNextWebhookHandler(cd, {
   onError(error) {
     console.error("Webhook error:", error);
   },
