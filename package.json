@@ -1,15 +1,15 @@
 {
-  "name": "creem-datafast-nextjs-example",
+  "name": "creem-datafast-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3001",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
     "creem": "^1.4.3",
-    "creem-datafast": "^0.1.0",
+    "creem-datafast": "file:../../packages/creem-datafast",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

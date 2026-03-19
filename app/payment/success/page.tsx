@@ -1,9 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function PaymentSuccess() {
+  return (
+    <Suspense
+      fallback={
+        <main style={containerStyle}>
+          <div style={cardStyle}>
+            <div style={spinnerWrapperStyle}>
+              <div style={spinnerStyle} />
+            </div>
+            <h1 style={{ fontSize: 24, fontWeight: 600, margin: "0 0 8px" }}>
+              Loading...
+            </h1>
+          </div>
+          <style dangerouslySetInnerHTML={{ __html: spinnerKeyframes }} />
+        </main>
+      }
+    >
+      <PaymentSuccessContent />
+    </Suspense>
+  );
+}
+
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"loading" | "success" | "error">(
     "loading",
