@@ -11,6 +11,7 @@ export default function Home() {
   useEffect(() => {
     initDataFast({
       websiteId: process.env.NEXT_PUBLIC_DATAFAST_WEBSITE_ID!,
+      apiUrl: process.env.NEXT_PUBLIC_DATAFAST_API_URL,
       allowLocalhost: true,
     }).then((client) => {
       datafastRef.current = client;
